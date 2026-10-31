@@ -322,8 +322,11 @@ enum Pattern {
 }
 
 impl Pattern {
-    /// Linear Trend: the least-squares line through `nums`. A lone number gives a step of zero.
+    /// Linear Trend: the least-squares line through `nums`. A lone number is copied unchanged.
     fn linear(nums: &[f64]) -> Pattern {
+        if nums.len() == 1 {
+            return Pattern::Copy;
+        }
         let (first, last, step) = least_squares(nums);
         Pattern::Linear { last, first, step }
     }
@@ -331,7 +334,7 @@ impl Pattern {
     /// The exponential curve y = b·m^x fitted to `nums` at positions 0, 1, 2… by least squares on
     /// the logarithms, as the GROWTH function fits positive numbers. Numbers below zero are fitted
     /// by their magnitudes and keep their sign. `None` when the numbers are not all above zero or
-    /// all below zero. A lone number gives a factor of one.
+    /// all below zero. A lone number is copied unchanged.
     fn growth(nums: &[f64]) -> Option<Pattern> {
         let sign = if nums.iter().all(|y| *y > 0.0) {
             1.0
@@ -340,6 +343,9 @@ impl Pattern {
         } else {
             return None;
         };
+        if nums.len() == 1 {
+            return Some(Pattern::Copy);
+        }
         let logs: Vec<f64> = nums.iter().map(|y| (y * sign).ln()).collect();
         let (first, last, step) = least_squares(&logs);
         Some(Pattern::Growth { last, first, step, sign })

@@ -1065,6 +1065,11 @@ fn linear_and_growth_trend_continue_the_fitted_line_or_curve() {
     s.execute("cell.set", json!({"cell": "M1", "input": "7"})).unwrap();
     fill(&mut s, "M1", "M1:M2", "linearTrend").unwrap();
     assert_eq!(v(&s, "M2"), Value::Number(7.0));
+    // It repeats unchanged, with every digit and at any size, by either trend.
+    s.execute("range.setValues", json!({"range": "V1", "values": [[1e308, 0.12345678901234567]]})).unwrap();
+    fill(&mut s, "V1", "V1:V3", "growthTrend").unwrap();
+    fill(&mut s, "W1", "W1:W3", "linearTrend").unwrap();
+    assert_eq!(nums(&s, &["V2", "V3", "W2", "W3"]), n(&[1e308, 1e308, 0.12345678901234567, 0.12345678901234567]));
     s.execute("cell.set", json!({"cell": "N1", "input": "1/15/2026"})).unwrap();
     s.execute("cell.set", json!({"cell": "N2", "input": "2/15/2026"})).unwrap();
     fill(&mut s, "N1:N2", "N1:N3", "linearTrend").unwrap();
