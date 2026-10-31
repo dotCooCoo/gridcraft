@@ -1070,6 +1070,11 @@ fn linear_and_growth_trend_continue_the_fitted_line_or_curve() {
     fill(&mut s, "V1", "V1:V3", "growthTrend").unwrap();
     fill(&mut s, "W1", "W1:W3", "linearTrend").unwrap();
     assert_eq!(nums(&s, &["V2", "V3", "W2", "W3"]), n(&[1e308, 1e308, 0.12345678901234567, 0.12345678901234567]));
+    // The smallest double three times repeats rather than averaging to zero.
+    let tiny = f64::from_bits(1);
+    s.execute("range.setValues", json!({"range": "X1", "values": [[tiny], [tiny], [tiny]]})).unwrap();
+    fill(&mut s, "X1:X3", "X1:X4", "linearTrend").unwrap();
+    assert_eq!(v(&s, "X4"), Value::Number(tiny));
     s.execute("cell.set", json!({"cell": "N1", "input": "1/15/2026"})).unwrap();
     s.execute("cell.set", json!({"cell": "N2", "input": "2/15/2026"})).unwrap();
     fill(&mut s, "N1:N2", "N1:N3", "linearTrend").unwrap();

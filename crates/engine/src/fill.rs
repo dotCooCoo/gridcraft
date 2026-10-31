@@ -546,7 +546,7 @@ fn least_squares(nums: &[f64]) -> (f64, f64, f64) {
     let (down, up) = if nums.iter().any(|y| y.abs() > TWO_POW_600) { (TWO_POW_MINUS_600, TWO_POW_600) } else { (1.0, 1.0) };
     let n = nums.len() as f64;
     let mean_x = (n - 1.0) / 2.0;
-    let mean_y = nums.iter().map(|y| y * down / n).sum::<f64>();
+    let mean_y = nums.iter().map(|y| y * down).sum::<f64>() / n;
     let mut num = 0.0;
     let mut den = 0.0;
     for (i, y) in nums.iter().enumerate() {
